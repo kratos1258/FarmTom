@@ -1,4 +1,4 @@
-# FreshAm TomatoLink Backend API
+# FreshAm Backend API
 
 ## Overview
 
