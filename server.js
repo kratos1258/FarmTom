@@ -17,6 +17,7 @@ const startServer = async () => {
         console.error(error);
     }
 };
+/*
 
 process.on("uncaughtException", (err) => {
     console.error("UNCAUGHT EXCEPTION");
@@ -27,5 +28,6 @@ process.on("unhandledRejection", (err) => {
     console.error("UNHANDLED REJECTION");
     console.error(err);
 });
+*/
 
 startServer();

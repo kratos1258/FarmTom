@@ -9,13 +9,17 @@ import emailVerificationRepository from "../repositories/emailVerification.repos
 import { OTP_EXPIRY_MINUTES } from "../constants/auth.js";
 import sendEmail from "../utils/sendEmail.js";
 import { verificationEmailTemplate } from "../utils/emailTemplates.js";
+import { AUTH_MESSAGES } from "../constants/messages.js";
+import passwordResetRepository from "../repositories/passwordReset.repository.js";
+import { passwordResetEmailTemplate } from "../utils/emailTemplates.js";
+
+
 
 const register = async (userData) => {
     console.log("Service started");
 
     const { email, roles } = userData;
 
-    console.log("Checking email...");
     const emailExists = await userRepository.existsByEmail(email);
 
     console.log("Email check complete");
@@ -27,9 +31,8 @@ const register = async (userData) => {
         );
     }
 
-    console.log("Creating user...");
     const user = await userRepository.create(userData);
-    console.log("User created");
+
     // Remove any previous verification OTPs
     await emailVerificationRepository.deleteByUser(user._id);
 
@@ -48,19 +51,16 @@ const register = async (userData) => {
             expiresAt,
         });
 
-    try {
-         await sendEmail({
-            to: user.email,
-            subject: "Verify your TomatoLink account",
-            html: verificationEmailTemplate(
-                user.firstName,
-                otp
-            ),
-        });
-    } catch (error) {
-        console.error("Verification email could not be sent:", error.message);
-    }
+    console.log("Before sending email");
 
+    await sendEmail({
+        to: user.email,
+        subject: "Verify your FreshAm account",
+        html: verificationEmailTemplate(
+            user.firstName,
+            otp
+        ),
+    });
     return user;
 };
 
@@ -129,15 +129,195 @@ const login = async ({ email, password }) => {
 
 const logout = async (userId) => {
     const user = await userRepository.findById(userId);
+    user.refreshToken = null;
+    await user.save();
+};
 
+const verifyEmail = async ({ email, otp }) => {
+    // Find user
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+        throw new AppError(
+            "User not found.",
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+    // Already verified?
+    if (user.isEmailVerified) {
+        throw new AppError(
+            "Email is already verified.",
+            HTTP_STATUS.BAD_REQUEST
+        );
+    }
+    // Find OTP
+    const verification =
+        await emailVerificationRepository.findByUser(user._id);
+    if (!verification) {
+        throw new AppError(
+            "Verification OTP not found.",
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+    // Expired?
+    if (verification.expiresAt < new Date()) {
+        throw new AppError(
+            "Verification OTP has expired.",
+            HTTP_STATUS.BAD_REQUEST
+        );
+    }
+    // Wrong OTP?
+    if (verification.otp !== otp) {
+        throw new AppError(
+            "Invalid verification OTP.",
+            HTTP_STATUS.BAD_REQUEST
+        );
+    }
+    // Verify account
+    user.isEmailVerified = true;
+    await user.save();
+    // Delete OTP
+    await emailVerificationRepository.deleteById(
+        verification._id
+    );
+    return user;
+};
+
+const resendVerificationEmail = async ({ email }) => {
+    // Find user
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+        throw new AppError(
+            "User not found.",
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+    // Already verified
+    if (user.isEmailVerified) {
+        throw new AppError(
+            "Email is already verified.",
+            HTTP_STATUS.BAD_REQUEST
+        );
+    }
+    // Remove previous OTP
+    await emailVerificationRepository.deleteByUser(user._id);
+    // Generate OTP
+    const otp = generateOTP();
+    const expiresAt = new Date(
+        Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000
+    );
+    // Save OTP
+    await emailVerificationRepository.create({
+        user: user._id,
+        otp,
+        expiresAt,
+    });
+    // Send Email
+    await sendEmail({
+        to: user.email,
+        subject: "Verify your FreshAm account",
+        html: verificationEmailTemplate(
+            user.firstName,
+            otp
+        ),
+    });
+    return otp;
+};
+
+const forgotPassword = async ({ email }) => {
+
+    const user = await userRepository.findByEmail(email);
+
+    if (!user) {
+        throw new AppError(
+            "User not found.",
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+
+    await passwordResetRepository.deleteByUser(user._id);
+
+    const otp = generateOTP();
+
+    const expiresAt = new Date(
+        Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000
+    );
+
+    await passwordResetRepository.create({
+        user: user._id,
+        otp,
+        expiresAt,
+    });
+
+    await sendEmail({
+        to: user.email,
+        subject: "Reset your FreshAm password",
+        html: passwordResetEmailTemplate(
+            user.firstName,
+            otp
+        ),
+    });
+
+    return otp;
+};
+
+const resetPassword = async ({ email, otp, newPassword }) => {
+    // Find user
+    const user = await userRepository.findByEmail(email);
+
+    if (!user) {
+        throw new AppError(
+            "User not found.",
+            HTTP_STATUS.NOT_FOUND
+        );
+    }
+
+    // Find reset OTP
+    const passwordReset =
+        await passwordResetRepository.findByOTP(
+            user._id,
+            otp
+        );
+
+    if (!passwordReset) {
+        throw new AppError(
+            "Invalid password reset OTP.",
+            HTTP_STATUS.BAD_REQUEST
+        );
+    }
+
+    // Check expiry
+    if (passwordReset.expiresAt < new Date()) {
+        throw new AppError(
+            "Password reset OTP has expired.",
+            HTTP_STATUS.BAD_REQUEST
+        );
+    }
+
+    // Update password
+    user.password = newPassword;
+
+    // Invalidate refresh token (forces login again)
     user.refreshToken = null;
 
+    // Triggers pre("save") to hash the password
     await user.save();
+
+    // Delete used OTP
+    await passwordResetRepository.deleteById(
+        passwordReset._id
+    );
+
+    return user;
 };
 
 export default {
     register,
     login,
-    logout
+    logout,
+    verifyEmail,
+    resendVerificationEmail,
+    forgotPassword,
+    resetPassword
 };
+
 

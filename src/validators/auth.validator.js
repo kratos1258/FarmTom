@@ -65,3 +65,37 @@ export const verifyEmailSchema = Joi.object({
         .length(6)
         .required(),
 });
+
+export const resendVerificationSchema = Joi.object({
+    email: Joi.string()
+        .trim()
+        .lowercase()
+        .email()
+        .required(),
+});
+
+export const forgotPasswordSchema = Joi.object({
+    email: Joi.string()
+        .trim()
+        .lowercase()
+        .email()
+        .required(),
+});
+
+export const resetPasswordSchema = Joi.object({
+    email: Joi.string()
+        .trim()
+        .lowercase()
+        .email()
+        .required(),
+
+    otp: Joi.string()
+        .trim()
+        .length(6)
+        .required(),
+
+    newPassword: Joi.string()
+        .min(8)
+        .max(50)
+        .required(),
+});

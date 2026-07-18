@@ -6,10 +6,15 @@ export const ERROR_MESSAGES = {
 
 
 export const AUTH_MESSAGES = {
-    REGISTER_SUCCESS: "User registered successfully.",
-    LOGIN_SUCCESS: "Login successful.",
-    LOGOUT_SUCCESS: "Logout successful.",
-    PASSWORD_RESET_EMAIL_SENT: "Password reset email sent.",
+    REGISTER_SUCCESS:"Registration successful. Please verify your email using the OTP sent to your email address.",
+    LOGIN_SUCCESS:"Login successful.",
+    EMAIL_VERIFIED:"Email verified successfully.",
+    VERIFICATION_EMAIL_SENT:"A new verification OTP has been sent to your email.",
+    PASSWORD_RESET_EMAIL_SENT:"Password reset OTP has been sent to your email.",
+    PASSWORD_RESET_SUCCESS:"Password reset successfully.",
+    LOGOUT_SUCCESS:"Logout successful.",
+    PASSWORD_RESET_EMAIL_SENT:"Password reset OTP has been sent to your email.",
+    PASSWORD_RESET_SUCCESS:"Password has been reset successfully.",
 };
 
 export const GENERAL_MESSAGES = {

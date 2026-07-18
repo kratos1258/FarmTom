@@ -13,11 +13,7 @@ import userRoutes from "./routes/user.routes.js"
 
 const app = express();
 
-/*
-|--------------------------------------------------------------------------
-| Middlewares
-|--------------------------------------------------------------------------
-*/
+
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -31,11 +27,7 @@ app.use(
 
 //rate limiter
 //app.use("/api/v1/auth", apiLimiter);
-/*
-|--------------------------------------------------------------------------
-| Health Check Route
-|--------------------------------------------------------------------------
-*/
+
 
 app.get("/", (req, res) => {
     res.status(200).json({
@@ -50,8 +42,7 @@ app.get("/", (req, res) => {
 //routes
 app.use("/api/v1/auth", authRoutes);
 //import userRoutes from "./routes/user.routes.js";
-
-app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/user", userRoutes);
 
 
 
