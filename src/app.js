@@ -2,6 +2,8 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
 
 //local imports
 import authRoutes from "./routes/auth.routes.js";
@@ -19,9 +21,23 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
+
+const allowedOrigins = process.env.CLIENT_URL.split(",");
+
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
+        origin: (origin, callback) => {
+            // Allow Postman and server-to-server requests
+            if (!origin) {
+                return callback(null, true);
+            }
+
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            return callback(new Error("Not allowed by CORS"));
+        },
         credentials: true,
     })
 );
