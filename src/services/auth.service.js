@@ -53,7 +53,7 @@ const register = async (userData) => {
 
     console.log("Before sending email");
 
-    await sendEmail({
+     sendEmail({
         to: user.email,
         subject: "Verify your FreshAm account",
         html: verificationEmailTemplate(

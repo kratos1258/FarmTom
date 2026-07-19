@@ -10,6 +10,7 @@ import AppError from "./utils/AppError.js";
 import { HTTP_STATUS } from "./constants/httpStatus.js";
 import apiLimiter from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js"
+import farmerRoutes from "./routes/farmer.routes.js";
 
 const app = express();
 
@@ -32,7 +33,7 @@ app.use(
 app.get("/", (req, res) => {
     res.status(200).json({
         success: true,
-        message: "TomatoLink API is running.",
+        message: "FreshAm API is running.",
         version: "1.0.0",
         environment: process.env.NODE_ENV || "development",
         timestamp: new Date().toISOString(),
@@ -43,7 +44,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRoutes);
 //import userRoutes from "./routes/user.routes.js";
 app.use("/api/v1/user", userRoutes);
-
+//import farmerRoutese 
+app.use("/api/v1/farmers", farmerRoutes);
 
 
 
