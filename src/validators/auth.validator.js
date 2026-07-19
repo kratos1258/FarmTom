@@ -38,9 +38,11 @@ export const registerSchema = Joi.object({
                 ROLES.WAREHOUSE_OPERATOR
             )
         )
-         .optional()
-        .default([ROLES.FARMER]),
+        .unique()
+        .min(1)
+        .required(),
 });
+
 
 export const loginSchema = Joi.object({
     email: Joi.string()

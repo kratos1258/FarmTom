@@ -44,12 +44,17 @@ const userSchema = new mongoose.Schema(
     },
 
     roles: {
-        type: [{
-            type: String,
-            enum: Object.values(ROLES),
-        }],
-        default: [ROLES.FARMER],
-    },
+      type: [{
+          type: String,
+          enum: [
+              ROLES.FARMER,
+              ROLES.BUYER,
+              ROLES.LOGISTICS_PROVIDER,
+              ROLES.WAREHOUSE_OPERATOR,
+          ],
+      }],
+      required: true,
+  },
 
     profileImage: {
       type: String,

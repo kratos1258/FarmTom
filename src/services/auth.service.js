@@ -30,6 +30,12 @@ const register = async (userData) => {
             HTTP_STATUS.CONFLICT
         );
     }
+    if (roles.includes(ROLES.ADMIN)) {
+        throw new AppError(
+            "You cannot register as an administrator.",
+            HTTP_STATUS.FORBIDDEN
+        );
+    }
 
     const user = await userRepository.create(userData);
 
