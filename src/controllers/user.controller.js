@@ -33,9 +33,27 @@ const updateProfile = async (req, res, next) => {
     }
 };
 
+const addRole = async (req, res, next) => {
+    try {
+        const user = await userService.addRole(
+            req.user.id,
+            req.body.role
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Role added successfully.",
+            data: user,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const userController = {
     getProfile,
     updateProfile,
+    addRole
 
 }
 

@@ -1,4 +1,4 @@
-import farmerService from "../services/farmer.service.js";
+import farmerService from "../services/farmerProfile.service.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { HTTP_STATUS } from "../constants/httpStatus.js";
 

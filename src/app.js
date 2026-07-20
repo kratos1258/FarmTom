@@ -12,7 +12,8 @@ import AppError from "./utils/AppError.js";
 import { HTTP_STATUS } from "./constants/httpStatus.js";
 import apiLimiter from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js"
-import farmerRoutes from "./routes/farmer.routes.js";
+import farmerRoutes from "./routes/farmerProfile.routes.js";
+import buyerProfileRoutes from "./routes/buyerProfile.routes.js";
 
 const app = express();
 
@@ -62,7 +63,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 //import farmerRoutese 
 app.use("/api/v1/farmers", farmerRoutes);
-
+// import buyerProfile ROUTES
+app.use("/api/v1/buyer-profile",buyerProfileRoutes);
 
 
 

@@ -9,3 +9,10 @@ export const ROLES = {
 
     WAREHOUSE_OPERATOR: "warehouse_operator",
 };
+
+export const SELF_ASSIGNABLE_ROLES = [
+    ROLES.FARMER,
+    ROLES.BUYER,
+    ROLES.WAREHOUSE_OPERATOR,
+    ROLES.LOGISTICS_PROVIDER,
+];
