@@ -6,7 +6,7 @@ The platform combines a digital marketplace with Digital Twin technology to moni
 
 ---
 
-# 🚀 Tech Stack
+# Tech Stack
 
 - Node.js
 - Express.js
