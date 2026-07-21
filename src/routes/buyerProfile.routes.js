@@ -17,19 +17,8 @@ const router = express.Router();
 
 router.post("/",authenticate,authorize(ROLES.BUYER),validate(createBuyerProfileSchema),buyerProfileController.createProfile);
 
-router.get(
-    "/me",
-    authenticate,
-    authorize(ROLES.BUYER),
-    buyerProfileController.getMyProfile
-);
+router.get("/me",authenticate,authorize(ROLES.BUYER),buyerProfileController.getMyProfile);
 
-router.patch(
-    "/me",
-    authenticate,
-    authorize(ROLES.BUYER),
-    validate(updateBuyerProfileSchema),
-    buyerProfileController.updateProfile
-);
+router.patch("/me",authenticate,authorize(ROLES.BUYER),validate(updateBuyerProfileSchema),buyerProfileController.updateProfile);
 
 export default router;

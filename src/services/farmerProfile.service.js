@@ -1,4 +1,4 @@
-import farmerRepository from "../repositories/farmer.repository.js";
+import farmerRepository from "../repositories/farmerProfile.repository.js";
 import userRepository from "../repositories/user.repository.js";
 import AppError from "../utils/AppError.js";
 import { HTTP_STATUS } from "../constants/httpStatus.js";

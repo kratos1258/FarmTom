@@ -1,8 +1,5 @@
 import Joi from "joi";
-import {
-    ROLES,
-    SELF_ASSIGNABLE_ROLES,
-} from "../constants/roles.js";
+import {ROLES,SELF_ASSIGNABLE_ROLES,} from "../constants/roles.js";
 
 export const updateProfileSchema = Joi.object({
     firstName: Joi.string()

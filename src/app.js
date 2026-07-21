@@ -14,6 +14,8 @@ import apiLimiter from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js"
 import farmerRoutes from "./routes/farmerProfile.routes.js";
 import buyerProfileRoutes from "./routes/buyerProfile.routes.js";
+import tomatoBatchRoutes from "./routes/tomatoBatch.routes.js";
+import marketplaceListingRoutes from "./routes/marketplaceListing.routes.js";
 
 const app = express();
 
@@ -65,7 +67,10 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/farmers", farmerRoutes);
 // import buyerProfile ROUTES
 app.use("/api/v1/buyer-profile",buyerProfileRoutes);
-
+// import tomatoBatch route
+app.use("/api/v1/tomato-batches",tomatoBatchRoutes);
+// market listing
+app.use("/api/v1/marketplace",marketplaceListingRoutes);
 
 
 app.use((req, res, next) => {
