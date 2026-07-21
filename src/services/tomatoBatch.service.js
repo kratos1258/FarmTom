@@ -37,6 +37,7 @@ const createBatch = async (user, batchData, file) => {
             image,
             ...batchData,
         });
+    return batch;
     };
 
 const getMyBatches = async (user) => {
